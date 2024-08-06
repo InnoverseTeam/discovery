@@ -1,0 +1,9 @@
+{
+  "endpoints": {
+    "host_url": "https://live.example.com",
+    "api_url": "https://api.live.example.com",
+    "portal_url": "https://portal.live.example.com",
+    "n3ds_url": "https://n3ds.live.example.com"
+  }
+}
+  
