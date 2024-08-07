@@ -25,20 +25,42 @@ route.get('/', async (req, res) => {
         res.header('Connection', 'close');
         res.status(200).send(discovery_xml);
     } catch (error) {
-        const error_xml = xmlbuilder.create('result', { version: '1.0', encoding: 'UTF-8' })
-            .ele('has_error', '1').up()
-            .ele('version', '1').up()
-            .ele('code', '400').up()
-            .ele('error_code', '3').up()
-            .ele('message', 'SERVICE_MAINTENANCE').up()
-            .up()
-            .end({ pretty: true, allowEmpty: true });
+        let message = '';
+        let errorCode = 0;
 
-        res.header('Content-Type', 'application/xml');
-        res.header('X-Dispatch', 'Olive::Web::Discovery::V1::Endpoint-index');
-        res.header('Connection', 'close');
-        res.status(400).send(error_xml);
+        switch (error.message) {
+            case 'SYSTEM_UPDATE_REQUIRED':
+                message = 'SYSTEM_UPDATE_REQUIRED';
+                errorCode = 1;
+                break;
+            case 'SETUP_NOT_COMPLETE':
+                message = 'SETUP_NOT_COMPLETE';
+                errorCode = 2;
+                break;
+            case 'SERVICE_MAINTENANCE':
+                message = 'SERVICE_MAINTENANCE';
+                errorCode = 3;
+                break;
+            case 'SERVICE_CLOSED':
+                message = 'SERVICE_CLOSED';
+                errorCode = 4;
+                break;
+            case 'PARENTAL_CONTROLS_ENABLED':
+                message = 'PARENTAL_CONTROLS_ENABLED';
+                errorCode = 5;
+                break;
+            case 'POSTING_LIMITED_PARENTAL_CONTROLS':
+                message = 'POSTING_LIMITED_PARENTAL_CONTROLS';
+                errorCode = 6;
+                break;
+            case 'NNID_BANNED':
+                message = 'NNID_BANNED';
+                errorCode = 7;
+                break;
+            default:
+                message = 'SERVER_ERROR';
+                errorCode = 15;
+                break;
+        }
     }
 });
-
-module.exports = route;
